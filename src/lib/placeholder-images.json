@@ -1,3 +1,40 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "video-thumb-1",
+      "description": "Abstract neon lights in motion",
+      "imageUrl": "https://picsum.photos/seed/nb1/400/225",
+      "imageHint": "neon lights"
+    },
+    {
+      "id": "video-thumb-2",
+      "description": "Car driving through a city at night",
+      "imageUrl": "https://picsum.photos/seed/nb2/400/225",
+      "imageHint": "night city"
+    },
+    {
+      "id": "video-thumb-3",
+      "description": "Glowing flowers in a dark environment",
+      "imageUrl": "https://picsum.photos/seed/nb3/400/225",
+      "imageHint": "glowing flower"
+    },
+    {
+      "id": "video-thumb-4",
+      "description": "A view of a galaxy or nebula",
+      "imageUrl": "https://picsum.photos/seed/nb4/400/225",
+      "imageHint": "galaxy space"
+    },
+    {
+      "id": "video-thumb-5",
+      "description": "Blurry city lights at night",
+      "imageUrl": "https://picsum.photos/seed/nb5/400/225",
+      "imageHint": "city lights"
+    },
+    {
+      "id": "video-thumb-6",
+      "description": "Abstract quantum-style visualization",
+      "imageUrl": "https://picsum.photos/seed/nb6/400/225",
+      "imageHint": "abstract fractal"
+    }
+  ]
 }
