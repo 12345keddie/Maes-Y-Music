@@ -121,7 +121,7 @@ export function VideoPlayer({
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-card/30 text-muted-foreground p-8 text-center">
           <Music4 className="w-16 h-16 mb-4 text-primary/50" />
           <h3 className="font-headline text-2xl text-foreground">
-            Welcome to NeonBeat
+            Welcome to Maes Y Music
           </h3>
           <p>Select a video from the browser or add to your playlist to begin.</p>
         </div>

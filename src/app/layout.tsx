@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'NeonBeat',
+  title: 'Maes Y Music',
   description: 'A music video player for streaming MP4 files.',
 };
 

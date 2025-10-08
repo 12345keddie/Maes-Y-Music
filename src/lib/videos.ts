@@ -10,7 +10,7 @@ export type Video = {
 
 const getThumbnail = (id: string) =>
   PlaceHolderImages.find((img) => img.id === id)?.imageUrl ||
-  'https://placehold.co/400x225/121212/64B5F6?text=NeonBeat';
+  'https://placehold.co/400x225/121212/64B5F6?text=Maes+Y+Music';
 
 export const videos: Video[] = [
   {

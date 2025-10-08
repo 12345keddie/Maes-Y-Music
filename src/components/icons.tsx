@@ -11,7 +11,7 @@ export function NeonBeatLogo({ className }: { className?: string }) {
     >
       <Music4 className="h-6 w-6" />
       <h1 className="text-2xl font-bold font-headline tracking-wider">
-        NeonBeat
+        Maes Y Music
       </h1>
     </div>
   );
