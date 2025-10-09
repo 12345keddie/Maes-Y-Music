@@ -20,6 +20,8 @@ import {
   VolumeX,
   Volume1,
   Music4,
+  Maximize,
+  Minimize,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -37,12 +39,12 @@ export function VideoPlayer({
   onPrevious,
 }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
-
+  const playerWrapperRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [volume, setVolume] = useState(0.8);
   const [duration, setDuration] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
     if (videoRef.current && video) {
@@ -93,7 +95,35 @@ export function VideoPlayer({
     }
   };
 
+  const toggleFullscreen = () => {
+    const playerElement = playerWrapperRef.current;
+    if (!playerElement) return;
+
+    if (!document.fullscreenElement) {
+      playerElement.requestFullscreen().catch((err) => {
+        console.error(
+          `Error attempting to enable full-screen mode: ${err.message} (${err.name})`
+        );
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
+  useEffect(() => {
+    const onFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', onFullscreenChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', onFullscreenChange);
+    };
+  }, []);
+
   const formatTime = (time: number) => {
+    if (isNaN(time) || time === 0) return '0:00';
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60)
       .toString()
@@ -108,7 +138,10 @@ export function VideoPlayer({
   }, [volume]);
 
   return (
-    <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden shadow-2xl shadow-primary/10 group">
+    <div
+      ref={playerWrapperRef}
+      className="relative w-full aspect-video bg-black rounded-lg overflow-hidden shadow-2xl shadow-primary/10 group"
+    >
       <video
         ref={videoRef}
         src={video?.videoUrl}
@@ -116,6 +149,7 @@ export function VideoPlayer({
         onLoadedMetadata={handleLoadedMetadata}
         onEnded={onEnded}
         className="w-full h-full object-contain"
+        onClick={handlePlayPause}
       />
 
       {!video && (
@@ -124,7 +158,9 @@ export function VideoPlayer({
           <h3 className="font-headline text-2xl text-foreground">
             Welcome to Maes Y Music
           </h3>
-          <p>Select a video from the browser or add to your playlist to begin.</p>
+          <p>
+            Select a video from the browser or add to your playlist to begin.
+          </p>
         </div>
       )}
 
@@ -192,22 +228,32 @@ export function VideoPlayer({
                   <SkipForward />
                 </Button>
               </div>
-              <div className="flex items-center gap-2 w-32">
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 w-32">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-white hover:text-primary"
+                    onClick={() => handleVolumeChange([volume > 0 ? 0 : 0.8])}
+                  >
+                    <VolumeIcon />
+                  </Button>
+                  <Slider
+                    value={[volume]}
+                    max={1}
+                    step={0.05}
+                    onValueChange={handleVolumeChange}
+                    className="flex-1"
+                  />
+                </div>
                 <Button
                   variant="ghost"
                   size="icon"
                   className="text-white hover:text-primary"
-                  onClick={() => handleVolumeChange([volume > 0 ? 0 : 0.8])}
+                  onClick={toggleFullscreen}
                 >
-                  <VolumeIcon />
+                  {isFullscreen ? <Minimize /> : <Maximize />}
                 </Button>
-                <Slider
-                  value={[volume]}
-                  max={1}
-                  step={0.05}
-                  onValueChange={handleVolumeChange}
-                  className="flex-1"
-                />
               </div>
             </div>
           </div>
