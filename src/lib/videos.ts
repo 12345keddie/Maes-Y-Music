@@ -27,4 +27,12 @@ export const videos: Video[] = [
     thumbnailUrl: 'https://i.ytimg.com/vi/At8v_Yc044Y/maxresdefault.jpg',
     videoUrl: '/KSI - Thick Of It (feat. Trippie Redd) [Official Music Video].mp4',
   },
+  {
+    id: 'sonic-speed-me-up',
+    title: 'Speed Me Up (Sonic The Hedgehog)',
+    artist: 'Wiz Khalifa, Ty Dolla $ign, Lil Yachty & Sueco the Child',
+    thumbnailUrl: 'https://i.ytimg.com/vi/dCuCpVPkWDY/maxresdefault.jpg',
+    videoUrl:
+      '/Wiz Khalifa, Ty Dolla $ign, Lil Yachty & Sueco the Child - Speed Me Up (Sonic The Hedgehog) [Video].mp4',
+  },
 ];
