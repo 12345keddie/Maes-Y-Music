@@ -42,4 +42,13 @@ export const videos: Video[] = [
     thumbnailUrl: 'https://i.ytimg.com/vi/efiLdiBk1f8/sddefault.jpg',
     videoUrl: '/Kid Cudi - Stars In The Sky.mp4',
   },
+  {
+    id: 'jelly-roll-run-it',
+    title: 'Run It (From Sonic The Hedgehog 3)',
+    artist: 'Jelly Roll',
+    thumbnailUrl:
+      'https://i.ytimg.com/vi/3aSxdwwT62M/hq720.jpg?sqp=-oaymwE7CK4FEIIDSFryq4qpAy0IARUAAAAAGAElAADIQj0AgKJD8AEB-AH-CYAC0AWKAgwIABABGGUgWyhJMA8=&rs=AOn4CLBffrKX2e-T3VLzbjpAVHvzWQTZsg',
+    videoUrl:
+      '/Jelly Roll - Run It (From Sonic The Hedgehog 3) [Official Music Video].mp4',
+  },
 ];
