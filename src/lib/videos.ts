@@ -17,7 +17,7 @@ export const videos: Video[] = [
     id: 'rick-astley',
     title: 'Never Gonna Give You Up',
     artist: 'Rick Astley',
-    thumbnailUrl: getThumbnail('video-thumb-1'),
+    thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
     videoUrl: '/Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster).mp4',
   },
 ];
