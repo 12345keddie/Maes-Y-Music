@@ -29,7 +29,7 @@ export const videos: Video[] = [
   },
   {
     id: 'sonic-speed-me-up',
-    title: 'Speed Me Up (Sonic The Hedgehog)',
+    title: 'Speed Me Up',
     artist: 'Wiz Khalifa, Ty Dolla $ign, Lil Yachty & Sueco the Child',
     thumbnailUrl: 'https://i.ytimg.com/vi/dCuCpVPkWDY/maxresdefault.jpg',
     videoUrl:
