@@ -23,7 +23,7 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'https://',
+        protocol: 'https',
         hostname: 'picsum.photos',
         port: '',
         pathname: '/**',
@@ -46,10 +46,7 @@ const nextConfig: NextConfig = {
     buildActivity: false,
   },
   experimental: {
-    allowedDevOrigins: [
-      'https://*.cloudworkstations.dev',
-      'https://*.firebase.studio',
-    ],
+    // allowedDevOrigins has been removed as it's no longer needed in this Next.js version
   },
 };
 
