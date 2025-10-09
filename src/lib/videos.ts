@@ -44,7 +44,7 @@ export const videos: Video[] = [
   },
   {
     id: 'jelly-roll-run-it',
-    title: 'Run It (From Sonic The Hedgehog 3)',
+    title: 'Run It',
     artist: 'Jelly Roll',
     thumbnailUrl:
       'https://i.ytimg.com/vi/3aSxdwwT62M/hq720.jpg?sqp=-oaymwE7CK4FEIIDSFryq4qpAy0IARUAAAAAGAElAADIQj0AgKJD8AEB-AH-CYAC0AWKAgwIABABGGUgWyhJMA8=&rs=AOn4CLBffrKX2e-T3VLzbjpAVHvzWQTZsg',
