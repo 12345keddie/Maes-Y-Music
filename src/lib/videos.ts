@@ -47,7 +47,7 @@ export const videos: Video[] = [
     title: 'Run It',
     artist: 'Jelly Roll',
     thumbnailUrl:
-      'https://i.ytimg.com/vi/3aSxdwwT62M/hq720.jpg?sqp=-oaymwE7CK4FEIIDSFryq4qpAy0IARUAAAAAGAElAADIQj0AgKJD8AEB-AH-CYAC0AWKAgwIABABGGUgWyhJMA8=&rs=AOn4CLBffrKX2e-T3VLzbjpAVHvzWQTZsg',
+      'https://cdn.sanity.io/images/o6uq28nb/production/5b214e8cfd60ccc537c6e2684855e771fcaa22d0-640x640.jpg?w=1200&h=630&fit=crop&crop=bottom',
     videoUrl:
       '/Jelly Roll - Run It (From Sonic The Hedgehog 3) [Official Music Video].mp4',
   },
