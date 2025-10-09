@@ -20,4 +20,11 @@ export const videos: Video[] = [
     thumbnailUrl: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
     videoUrl: '/Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster).mp4',
   },
+  {
+    id: 'ksi-thick-of-it',
+    title: 'Thick Of It (feat. Trippie Redd)',
+    artist: 'KSI',
+    thumbnailUrl: 'https://i.ytimg.com/vi/At8v_Yc044Y/maxresdefault.jpg',
+    videoUrl: '/KSI - Thick Of It (feat. Trippie Redd) [Official Music Video].mp4',
+  },
 ];
