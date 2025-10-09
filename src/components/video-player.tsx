@@ -7,6 +7,7 @@ import {
   useEffect,
   type MouseEvent,
   useCallback,
+  useMemo,
 } from 'react';
 import { Button } from './ui/button';
 import { Slider } from './ui/slider';
@@ -100,7 +101,7 @@ export function VideoPlayer({
     return `${minutes}:${seconds}`;
   };
 
-  const VolumeIcon = useCallback(() => {
+  const VolumeIcon = useMemo(() => {
     if (volume === 0) return VolumeX;
     if (volume < 0.5) return Volume1;
     return Volume2;
