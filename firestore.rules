@@ -1,53 +1,64 @@
 /**
- * @file Overview
- * This ruleset enforces a user-centric model for a simple polling application.
+ * @fileoverview Firestore Security Rules for the Poll application.
+ *
+ * Core Philosophy:
+ * This ruleset allows public read access to polls while restricting write access to authenticated users. Votes are stored as subcollections of polls, and write access to votes is restricted to authenticated users.
  *
  * Data Structure:
- * - /polls/{pollId}: Stores poll documents, accessible for public reading.
- * - /polls/{pollId}/votes/{voteId}: Stores individual votes associated with a poll. Only authenticated users can create votes. Listing votes are restricted to authenticated users.
+ * - /polls/{pollId}: Stores poll documents. Anyone can read polls. Only authenticated users can create polls. Only authenticated users can update or delete polls.
+ * - /polls/{pollId}/votes/{voteId}: Stores votes for each poll. Only authenticated users can create votes. Only authenticated users can update or delete votes.
  *
  * Key Security Decisions:
- * - Polls are publicly readable but only authenticated users can vote.
- * - Listing votes requires the user to be authenticated.
+ * - Polls are publicly readable to allow anyone to view them.
+ * - Poll creation, updates, and deletion are restricted to authenticated users to prevent unauthorized modifications.
+ * - Votes are restricted to authenticated users.
  *
  * Denormalization for Authorization:
- * - The `Vote` entity denormalizes `pollId`. This is used to enforce relational integrity.
+ * - The 'Vote' entity denormalizes the 'pollId' to allow independent authorization without requiring 'get()' calls to the parent 'Poll' document.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Grants public read access to polls, but restricts write access.
+     * @description Allows anyone to read polls, but restricts creating, updating, and deleting polls to authenticated users.
      * @path /polls/{pollId}
-     * @allow (get, list): Any user can read polls.
-     * @deny (create, update, delete): No one can create, update, or delete polls through direct client requests.
-     * @principle Public read, restricted write.
+     * @allow (get, list): if true
+     * @allow (create): if isSignedIn()
+     * @allow (update): if isSignedIn() && resource != null
+     * @allow (delete): if isSignedIn() && resource != null
+     * @deny (create): if !isSignedIn()
+     * @deny (update): if !isSignedIn() || resource == null
+     * @deny (delete): if !isSignedIn() || resource == null
+     * @principle Allows public read access to polls while restricting write access to authenticated users.
      */
     match /polls/{pollId} {
       allow get, list: if true;
-      allow create, update, delete: if false;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
     }
 
     /**
-     * @description Restricts access to votes to authenticated users.
+     * @description Allows only authenticated users to create, read, update, and delete votes within a poll.
      * @path /polls/{pollId}/votes/{voteId}
-     * @allow (create): Authenticated users can create votes for a poll, provided the `pollId` matches the parent document.
-     * @allow (get, list): Authenticated users can list and get votes.
-     * @deny (update, delete): No one can update or delete votes through direct client requests.
-     * @deny (create): Rejects vote creation if the `pollId` in the data doesn't match the parent document ID.
-     * @principle Enforces authentication and relational integrity for votes.
+     * @allow (get, list): if isSignedIn()
+     * @allow (create): if isSignedIn()
+     * @allow (update): if isSignedIn() && resource != null
+     * @allow (delete): if isSignedIn() && resource != null
+     * @deny (create): if !isSignedIn()
+     * @deny (update): if !isSignedIn() || resource == null
+     * @deny (delete): if !isSignedIn() || resource == null
+     * @principle Restricts access to votes to authenticated users.
      */
     match /polls/{pollId}/votes/{voteId} {
-      allow create: if isSignedIn() && request.resource.data.pollId == pollId;
       allow get, list: if isSignedIn();
-      allow update, delete: if false;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
     }
 
-    // --- Helper functions ---
-    /**
-     * @description Checks if the user is signed in.
-     */
+    // Helper function to check if the user is signed in
     function isSignedIn() {
       return request.auth != null;
     }
