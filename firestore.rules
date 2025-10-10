@@ -1,58 +1,52 @@
 /**
- * @fileoverview Firestore Security Rules for the Poll application.
- *
- * Core Philosophy:
- * This ruleset prioritizes a flexible schema during prototyping and enforces strict access control based on authenticated users.
- * It uses a public read, owner-write pattern for polls and allows authenticated users to create votes under specific polls.
- * It avoids complex authorization checks and prioritizes performance.
+ * @file Overview
+ * This ruleset enforces a user-centric model for a simple polling application.
  *
  * Data Structure:
- * - /polls/{pollId}: Stores poll documents.
- * - /polls/{pollId}/votes/{voteId}: Stores votes for each poll.
+ * - /polls/{pollId}: Stores poll documents, accessible for public reading.
+ * - /polls/{pollId}/votes/{voteId}: Stores individual votes associated with a poll. Only authenticated users can create votes. Listing votes are restricted to authenticated users.
  *
  * Key Security Decisions:
- * - Polls are publicly readable.
- * - Only authenticated users can create votes, but votes are not owned by the voter.
+ * - Polls are publicly readable but only authenticated users can vote.
+ * - Listing votes requires the user to be authenticated.
  *
  * Denormalization for Authorization:
- * - The `Vote` entity includes a `pollId` field to simplify authorization checks and prevent costly `get()` operations.
+ * - The `Vote` entity denormalizes `pollId`. This is used to enforce relational integrity.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows public read access to polls, but restricts creation, updates, and deletion to authenticated users.
+     * @description Grants public read access to polls, but restricts write access.
      * @path /polls/{pollId}
-     * @allow get, list: Everyone can read polls.
-     * @allow create: Authenticated users can create polls.
-     * @deny update, delete: Only the poll creator can update or delete polls.
-     * @principle Public read, owner-write for polls.
+     * @allow (get, list): Any user can read polls.
+     * @deny (create, update, delete): No one can create, update, or delete polls through direct client requests.
+     * @principle Public read, restricted write.
      */
     match /polls/{pollId} {
       allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Allows authenticated users to create votes under specific polls.
+     * @description Restricts access to votes to authenticated users.
      * @path /polls/{pollId}/votes/{voteId}
-     * @allow get, list: no reads are allowed.
-     * @allow create: Any signed in user can create a vote.
-     * @deny update, delete: No updates or deletes are allowed.
+     * @allow (create): Authenticated users can create votes for a poll, provided the `pollId` matches the parent document.
+     * @allow (get, list): Authenticated users can list and get votes.
+     * @deny (update, delete): No one can update or delete votes through direct client requests.
+     * @deny (create): Rejects vote creation if the `pollId` in the data doesn't match the parent document ID.
+     * @principle Enforces authentication and relational integrity for votes.
      */
     match /polls/{pollId}/votes/{voteId} {
-        allow get, list: if false;
-        allow create: if isSignedIn();
-        allow update, delete: if false;
+      allow create: if isSignedIn() && request.resource.data.pollId == pollId;
+      allow get, list: if isSignedIn();
+      allow update, delete: if false;
     }
 
-    // --- Helper Functions ---
-
+    // --- Helper functions ---
     /**
      * @description Checks if the user is signed in.
-     * @return {boolean} True if the user is signed in, false otherwise.
      */
     function isSignedIn() {
       return request.auth != null;
