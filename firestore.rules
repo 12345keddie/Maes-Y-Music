@@ -1,0 +1,75 @@
+/**
+ * @fileoverview Firestore Security Rules for the Poll application.
+ *
+ * Core Philosophy:
+ * This ruleset prioritizes a flexible data structure for prototyping and a strict access control model based on path-based authorization.
+ * It enforces that users can only create, update, and delete their own votes within a poll. Poll creation and management are open for prototyping purposes.
+ *
+ * Data Structure:
+ * - /polls/{pollId}: Stores poll documents.
+ * - /polls/{pollId}/votes/{voteId}: Stores individual votes for each poll.
+ *
+ * Key Security Decisions:
+ * - Public Polls: Polls are publicly readable for rapid prototyping, but in a production app, this would likely need to be restricted.
+ * - Owner-Only Votes: Votes can only be created, updated, or deleted by their owner.
+ * - No User Listing: Listing users is not supported in this prototype.
+ *
+ * Denormalization for Authorization:
+ * - The `Vote` documents denormalize `pollId` to allow authorization without needing to fetch the parent `Poll` document.
+ *
+ * Structural Segregation:
+ * - Polls and Votes are stored in separate top-level collections to enable secure list operations.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Allows anyone to read polls, but restricts write access.
+     * @path /polls/{pollId}
+     * @allow (get, list): Any user can read any poll.
+     * @allow (create): Any authenticated user can create a poll.
+     * @deny (update, delete): No one can update or delete a poll (for now, during prototyping).
+     * @principle Allows public read access to polls while restricting write access for prototyping.
+     */
+    match /polls/{pollId} {
+      allow get, list: if true;
+      allow create: if isSignedIn();
+      allow update, delete: if false;
+    }
+
+    /**
+     * @description Allows users to create, read, update, and delete their own votes within a poll.
+     * @path /polls/{pollId}/votes/{voteId}
+     * @allow (create): An authenticated user can create a vote if the voterId matches their UID.
+     *   Example: request.auth.uid = 'user123', request.resource.data.voterId = 'user123'
+     * @allow (get, list): An authenticated user can read any vote.
+     * @allow (update, delete): An authenticated user can update/delete their own vote if the voterId matches their UID and the vote exists.
+     *   Example: request.auth.uid = 'user123', resource.data.voterId = 'user123'
+     * @deny (create): An authenticated user cannot create a vote if the voterId does not match their UID.
+     *   Example: request.auth.uid = 'user123', request.resource.data.voterId = 'otherUser'
+     * @deny (update, delete): An authenticated user cannot update/delete someone else's vote.
+     *   Example: request.auth.uid = 'user123', resource.data.voterId = 'otherUser'
+     * @principle Enforces document ownership for votes, allowing users to manage only their own votes.
+     */
+    match /polls/{pollId}/votes/{voteId} {
+      allow get, list: if true;
+      allow create: if isSignedIn() && request.resource.data.voterId == request.auth.uid;
+      allow update: if isSignedIn() && isExistingOwner(resource.data.voterId);
+      allow delete: if isSignedIn() && isExistingOwner(resource.data.voterId);
+    }
+  }
+
+  // Helper functions
+  function isSignedIn() {
+    return request.auth != null;
+  }
+
+  function isOwner(userId) {
+    return request.auth.uid == userId;
+  }
+
+  function isExistingOwner(userId) {
+    return isOwner(userId) && resource != null;
+  }
+}

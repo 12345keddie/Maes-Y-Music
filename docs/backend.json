@@ -1,0 +1,136 @@
+{
+  "entities": {
+    "Poll": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Poll",
+      "type": "object",
+      "description": "Represents a poll with a question and multiple options.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the poll."
+        },
+        "question": {
+          "type": "string",
+          "description": "The question being asked in the poll."
+        },
+        "options": {
+          "type": "array",
+          "description": "List of poll options.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp of when the poll was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "question",
+        "options",
+        "createdAt"
+      ]
+    },
+    "Vote": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Vote",
+      "type": "object",
+      "description": "Represents a user's vote in a poll.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the vote."
+        },
+        "pollId": {
+          "type": "string",
+          "description": "Reference to the Poll this vote belongs to. (Relationship: Poll 1:N Vote)"
+        },
+        "voterId": {
+          "type": "string",
+          "description": "Reference to the Voter. (Relationship: Voter 1:N Vote)"
+        },
+        "option": {
+          "type": "string",
+          "description": "The option that was selected in the vote."
+        },
+        "votedAt": {
+          "type": "string",
+          "description": "Timestamp of when the vote was cast.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "pollId",
+        "voterId",
+        "option",
+        "votedAt"
+      ]
+    },
+    "Voter": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Voter",
+      "type": "object",
+      "description": "Represents a person who is allowed to vote in a poll.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the voter."
+        }
+      },
+      "required": [
+        "id"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/polls/{pollId}",
+        "definition": {
+          "entityName": "Poll",
+          "schema": {
+            "$ref": "#/backend/entities/Poll"
+          },
+          "description": "Stores poll documents. Includes the question, options, and creation timestamp.",
+          "params": [
+            {
+              "name": "pollId",
+              "description": "Unique identifier for the poll."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/polls/{pollId}/votes/{voteId}",
+        "definition": {
+          "entityName": "Vote",
+          "schema": {
+            "$ref": "#/backend/entities/Vote"
+          },
+          "description": "Stores individual votes for each poll. Includes denormalized 'pollId' for authorization independence.",
+          "params": [
+            {
+              "name": "pollId",
+              "description": "Unique identifier for the poll."
+            },
+            {
+              "name": "voteId",
+              "description": "Unique identifier for the vote."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure is designed to support a simple poll application with real-time updates. It prioritizes authorization independence by avoiding `get()` calls in security rules. The structure leverages structural segregation and path-based ownership where appropriate.\n\n*   `/polls/{pollId}`: Stores poll data.\n*   `/polls/{pollId}/votes/{voteId}`: Stores individual votes for each poll, utilizing hierarchical paths for ownership. This structure also denormalizes `pollId` into the Vote documents for structural reasons, improving query performance and scalability\n\nThis structure ensures Authorization Independence because security rules can be written without needing to fetch parent document data (e.g., checking poll ownership when a user votes). Security rules will rely solely on `request.auth.uid` and the data present in the documents being accessed/modified.\n\nThe structure supports QAPs by segregating polls and votes into separate collections, which enables secure list operations. We can apply collection-level security rules for listing polls or votes without needing to filter based on user roles or other criteria."
+  }
+}
