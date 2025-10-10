@@ -6,7 +6,6 @@ import { VideoPlayer } from './video-player';
 import { VideoBrowser } from './video-browser';
 import { Playlist } from './playlist';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { NeonBeatLogo } from './icons';
 import { useToast } from '@/hooks/use-toast';
 import { Film, ListMusic } from 'lucide-react';
 
@@ -93,12 +92,9 @@ export function NeonBeatPlayer({ allVideos }: NeonBeatPlayerProps) {
   };
 
   return (
-    <div className="flex flex-col h-screen max-h-screen">
-      <header className="flex-shrink-0 p-4 border-b border-primary/10">
-        <NeonBeatLogo />
-      </header>
-      <div className="flex-grow grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8 overflow-hidden p-4 md:p-8">
-        <div className="lg:col-span-2 flex flex-col items-center justify-center min-h-0">
+    <div className="flex h-full flex-col">
+      <div className="grid flex-grow grid-cols-1 gap-4 overflow-hidden p-4 md:gap-8 md:p-8 lg:grid-cols-3">
+        <div className="flex min-h-0 flex-col items-center justify-center lg:col-span-2">
           <VideoPlayer
             video={currentVideo}
             onEnded={handleNext}
@@ -107,9 +103,9 @@ export function NeonBeatPlayer({ allVideos }: NeonBeatPlayerProps) {
           />
         </div>
 
-        <aside className="lg:col-span-1 flex flex-col bg-card/50 rounded-lg overflow-hidden border">
-          <Tabs defaultValue="browse" className="flex flex-col h-full">
-            <TabsList className="grid w-full grid-cols-2 m-2">
+        <aside className="border-card/50 flex flex-col overflow-hidden rounded-lg border bg-card/50 lg:col-span-1">
+          <Tabs defaultValue="browse" className="flex h-full flex-col">
+            <TabsList className="m-2 grid w-full grid-cols-2">
               <TabsTrigger value="browse">
                 <Film className="mr-2 h-4 w-4" />
                 Browse
@@ -119,14 +115,20 @@ export function NeonBeatPlayer({ allVideos }: NeonBeatPlayerProps) {
                 Playlist
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="browse" className="flex-grow overflow-y-auto mt-0">
+            <TabsContent
+              value="browse"
+              className="mt-0 flex-grow overflow-y-auto"
+            >
               <VideoBrowser
                 videos={allVideos}
                 onSelectVideo={handleSelectVideo}
                 onAddToPlaylist={handleAddToPlaylist}
               />
             </TabsContent>
-            <TabsContent value="playlist" className="flex-grow overflow-y-auto mt-0">
+            <TabsContent
+              value="playlist"
+              className="mt-0 flex-grow overflow-y-auto"
+            >
               <Playlist
                 playlist={playlist}
                 currentVideoId={currentVideo?.id}

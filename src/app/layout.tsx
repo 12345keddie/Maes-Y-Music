@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
+import { FirebaseClientProvider } from '@/firebase';
+import { AppHeader } from '@/components/app-header';
 
 export const metadata: Metadata = {
   title: 'Maes Y Music',
@@ -31,8 +33,15 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
-        {children}
-        <Toaster />
+        <FirebaseClientProvider>
+          <div className="flex flex-col h-screen max-h-screen bg-background text-foreground">
+            <AppHeader />
+            <main className="flex-grow overflow-hidden">
+              {children}
+            </main>
+          </div>
+          <Toaster />
+        </FirebaseClientProvider>
       </body>
     </html>
   );
