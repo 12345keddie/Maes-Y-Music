@@ -9,6 +9,13 @@ import { CheckCircle } from 'lucide-react';
 
 const updates = [
   {
+    version: 'v1.2.1',
+    title: 'Tenby Update',
+    date: 'October 2025',
+    description:
+      "Just a tiny update while I'm away for the week. I've added a community poll to decide if K-Pop Demon Hunters songs should be added. The poll will last until Halloween!",
+  },
+  {
     version: 'v1.2.0',
     title: 'Real-Time Community Polls',
     date: 'October 2025',
