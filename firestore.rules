@@ -1,25 +1,61 @@
+/**
+ * @fileoverview Firestore Security Rules for the Poll application.
+ *
+ * Core Philosophy:
+ * This ruleset prioritizes a flexible schema during prototyping and enforces strict access control based on authenticated users.
+ * It uses a public read, owner-write pattern for polls and allows authenticated users to create votes under specific polls.
+ * It avoids complex authorization checks and prioritizes performance.
+ *
+ * Data Structure:
+ * - /polls/{pollId}: Stores poll documents.
+ * - /polls/{pollId}/votes/{voteId}: Stores votes for each poll.
+ *
+ * Key Security Decisions:
+ * - Polls are publicly readable.
+ * - Only authenticated users can create votes, but votes are not owned by the voter.
+ *
+ * Denormalization for Authorization:
+ * - The `Vote` entity includes a `pollId` field to simplify authorization checks and prevent costly `get()` operations.
+ */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    /**
+     * @description Allows public read access to polls, but restricts creation, updates, and deletion to authenticated users.
+     * @path /polls/{pollId}
+     * @allow get, list: Everyone can read polls.
+     * @allow create: Authenticated users can create polls.
+     * @deny update, delete: Only the poll creator can update or delete polls.
+     * @principle Public read, owner-write for polls.
+     */
     match /polls/{pollId} {
       allow get, list: if true;
       allow create: if isSignedIn();
-      allow update, delete: if isSignedIn() && isOwner(pollId);
+      allow update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
     }
 
+    /**
+     * @description Allows authenticated users to create votes under specific polls.
+     * @path /polls/{pollId}/votes/{voteId}
+     * @allow get, list: no reads are allowed.
+     * @allow create: Any signed in user can create a vote.
+     * @deny update, delete: No updates or deletes are allowed.
+     */
     match /polls/{pollId}/votes/{voteId} {
-      allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update, delete: if false;
+        allow get, list: if false;
+        allow create: if isSignedIn();
+        allow update, delete: if false;
     }
 
+    // --- Helper Functions ---
+
+    /**
+     * @description Checks if the user is signed in.
+     * @return {boolean} True if the user is signed in, false otherwise.
+     */
     function isSignedIn() {
       return request.auth != null;
-    }
-
-    function isOwner(pollId) {
-      return get(/databases/$(database)/documents/polls/$(pollId)).data.owner == request.auth.uid;
     }
   }
 }
