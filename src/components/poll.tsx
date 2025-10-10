@@ -21,11 +21,11 @@ import {
   writeBatch,
   serverTimestamp,
 } from 'firebase/firestore';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
 import { useAuth } from '@/firebase/provider';
 import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
-import { ThumbsUp, ThumbsDown, Loader2 } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, Loader2, PartyPopper } from 'lucide-react';
 import { Progress } from './ui/progress';
 
 const POLL_ID = 'kpop-demon-hunters';
@@ -34,6 +34,14 @@ export function Poll() {
   const firestore = useFirestore();
   const auth = useAuth();
   const { user, isUserLoading } = useUser();
+  const [isPollActive, setIsPollActive] = useState(true);
+
+  useEffect(() => {
+    // Halloween in the UK. Note that UK is on GMT (UTC+0) at this time.
+    const pollEndDate = new Date('2025-10-31T23:59:59Z');
+    const now = new Date();
+    setIsPollActive(now < pollEndDate);
+  }, []);
 
   const pollRef = useMemoFirebase(
     () => (firestore ? doc(firestore, 'polls', POLL_ID) : null),
@@ -78,7 +86,7 @@ export function Poll() {
   }, [user, votes]);
 
   const handleVote = async (option: string) => {
-    if (!user || !firestore || !votesRef) return; // ensure votesRef is not null
+    if (!user || !firestore || !votesRef || !isPollActive) return;
     const voteRef = doc(votesRef, user.uid);
     const voteDoc = {
       pollId: POLL_ID,
@@ -108,6 +116,8 @@ export function Poll() {
 
   const isLoading = isUserLoading || (user && isLoadingVotes);
 
+  const showResults = userVote || !isPollActive;
+
   return (
     <div className="fixed bottom-4 right-4 w-full max-w-sm z-50">
       <Card className="bg-card/80 backdrop-blur-sm">
@@ -124,8 +134,14 @@ export function Poll() {
             <div className="flex items-center justify-center h-24">
               <Loader2 className="animate-spin text-primary" />
             </div>
-          ) : userVote ? (
+          ) : showResults ? (
             <div className="space-y-3">
+              {!isPollActive && (
+                <div className="flex items-center text-sm text-center p-2 rounded-md bg-accent/20 text-accent-foreground justify-center gap-2">
+                  <PartyPopper className="w-4 h-4" />
+                  <span>The poll has ended. Thanks for voting!</span>
+                </div>
+              )}
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-sm font-medium">Yes</span>
@@ -170,7 +186,7 @@ export function Poll() {
             </div>
           )}
         </CardContent>
-        {userVote && (
+        {userVote && isPollActive && (
           <CardFooter className="text-xs text-muted-foreground justify-center pt-4">
             <p>You voted: {userVote}</p>
           </CardFooter>
