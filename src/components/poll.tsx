@@ -39,9 +39,13 @@ export function Poll() {
     () => (firestore ? doc(firestore, 'polls', POLL_ID) : null),
     [firestore]
   );
+  // Only create the votes reference if we have a user
   const votesRef = useMemoFirebase(
-    () => (firestore ? collection(firestore, 'polls', POLL_ID, 'votes') : null),
-    [firestore]
+    () =>
+      firestore && user
+        ? collection(firestore, 'polls', POLL_ID, 'votes')
+        : null,
+    [firestore, user]
   );
 
   const { data: votes, isLoading: isLoadingVotes } = useCollection(votesRef);
@@ -74,7 +78,7 @@ export function Poll() {
   }, [user, votes]);
 
   const handleVote = async (option: string) => {
-    if (!user || !firestore || !pollRef) return;
+    if (!user || !firestore || !votesRef) return; // ensure votesRef is not null
     const voteRef = doc(votesRef, user.uid);
     const voteDoc = {
       pollId: POLL_ID,
@@ -102,7 +106,7 @@ export function Poll() {
   const yesPercentage = totalVotes > 0 ? (voteCounts.Yes / totalVotes) * 100 : 0;
   const noPercentage = totalVotes > 0 ? (voteCounts.No / totalVotes) * 100 : 0;
 
-  const isLoading = isUserLoading || isLoadingVotes;
+  const isLoading = isUserLoading || (user && isLoadingVotes);
 
   return (
     <div className="fixed bottom-4 right-4 w-full max-w-sm z-50">
@@ -149,6 +153,7 @@ export function Poll() {
                 variant="outline"
                 size="lg"
                 onClick={() => handleVote('Yes')}
+                disabled={!user}
               >
                 <ThumbsUp className="mr-2 h-4 w-4" />
                 Yes
@@ -157,6 +162,7 @@ export function Poll() {
                 variant="outline"
                 size="lg"
                 onClick={() => handleVote('No')}
+                disabled={!user}
               >
                 <ThumbsDown className="mr-2 h-4 w-4" />
                 No
