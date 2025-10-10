@@ -25,7 +25,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
 import { useAuth } from '@/firebase/provider';
 import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
-import { ThumbsUp, ThumbsDown, Loader2, PartyPopper } from 'lucide-react';
+import {
+  ThumbsUp,
+  ThumbsDown,
+  Loader2,
+  PartyPopper,
+  X,
+} from 'lucide-react';
 import { Progress } from './ui/progress';
 
 const POLL_ID = 'kpop-demon-hunters';
@@ -35,6 +41,7 @@ export function Poll() {
   const auth = useAuth();
   const { user, isUserLoading } = useUser();
   const [isPollActive, setIsPollActive] = useState(true);
+  const [isDismissed, setIsDismissed] = useState(false);
 
   useEffect(() => {
     // Halloween in the UK. Note that UK is on GMT (UTC+0) at this time.
@@ -118,9 +125,24 @@ export function Poll() {
 
   const showResults = userVote || !isPollActive;
 
+  if (isDismissed) {
+    return null;
+  }
+
   return (
     <div className="fixed bottom-4 right-4 w-full max-w-sm z-50">
-      <Card className="bg-card/80 backdrop-blur-sm">
+      <Card className="bg-card/80 backdrop-blur-sm relative">
+        {userVote && isPollActive && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-2 right-2 h-6 w-6 text-muted-foreground hover:text-foreground"
+            onClick={() => setIsDismissed(true)}
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close poll</span>
+          </Button>
+        )}
         <CardHeader>
           <CardTitle className="text-lg font-headline">
             Community Poll
