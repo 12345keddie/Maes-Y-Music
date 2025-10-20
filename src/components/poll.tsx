@@ -71,9 +71,9 @@ export function Poll() {
     }
   }, [user, isUserLoading, auth]);
 
-  // Create the poll if it doesn't exist
+  // Create the poll if it doesn't exist, only after user is authenticated.
   useEffect(() => {
-    if (firestore) {
+    if (firestore && user) {
       const pollDoc = {
         id: POLL_ID,
         question: 'Should I add KPop Demon Hunters songs?',
@@ -85,7 +85,7 @@ export function Poll() {
         merge: true,
       });
     }
-  }, [firestore]);
+  }, [firestore, user]);
 
   const userVote = useMemo(() => {
     if (!user || !votes) return null;
