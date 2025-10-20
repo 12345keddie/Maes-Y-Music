@@ -37,7 +37,7 @@ export function VideoBrowser({
               <div className="flex">
                 <button
                   onClick={() => onSelectVideo(video)}
-                  className="relative w-1/3 aspect-video overflow-hidden group/thumb"
+                  className="relative w-1/3 aspect-video overflow-hidden group/thumb bg-black"
                   aria-label={`Play ${video.title}`}
                 >
                   <Image
@@ -45,7 +45,7 @@ export function VideoBrowser({
                     alt={`Thumbnail for ${video.title}`}
                     width={160}
                     height={90}
-                    className="object-cover w-full h-full transition-transform duration-300 group-hover/thumb:scale-110"
+                    className="object-contain w-full h-full transition-transform duration-300 group-hover/thumb:scale-110"
                     data-ai-hint="neon lights"
                   />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/thumb:opacity-100 transition-opacity">
