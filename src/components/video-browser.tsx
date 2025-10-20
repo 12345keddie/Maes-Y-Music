@@ -37,7 +37,7 @@ export function VideoBrowser({
               <div className="flex">
                 <button
                   onClick={() => onSelectVideo(video)}
-                  className="relative w-1/3 aspect-video overflow-hidden group/thumb bg-black"
+                  className="relative w-1/3 aspect-video overflow-hidden group/thumb bg-black flex items-center justify-center"
                   aria-label={`Play ${video.title}`}
                 >
                   <Image
