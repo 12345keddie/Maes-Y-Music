@@ -36,13 +36,6 @@ export const videos: Video[] = [
       '/Wiz Khalifa, Ty Dolla $ign, Lil Yachty & Sueco the Child - Speed Me Up (Sonic The Hedgehog) [Official Music Video].mp4',
   },
   {
-    id: 'kid-cudi-stars-in-the-sky',
-    title: 'Stars In The Sky',
-    artist: 'Kid Cudi',
-    thumbnailUrl: 'https://i.ytimg.com/vi/efiLdiBk1f8/sddefault.jpg',
-    videoUrl: '/Kid Cudi - Stars In The Sky (from Sonic The Hedgehog 2).mp4',
-  },
-  {
     id: 'jelly-roll-run-it',
     title: 'Run It',
     artist: 'Jelly Roll',
