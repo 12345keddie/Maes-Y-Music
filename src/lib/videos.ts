@@ -44,4 +44,11 @@ export const videos: Video[] = [
     videoUrl:
       '/Jelly Roll - Run It (From Sonic The Hedgehog 3) [Official Music Video].mp4',
   },
+  {
+    id: 'vaeb-roa',
+    title: 'RÓA',
+    artist: 'VÆB',
+    thumbnailUrl: 'https://i.ytimg.com/vi/-yJwUsA40K4/maxresdefault.jpg',
+    videoUrl: '/VÆB - RÓA (Official Music Video) - Eurovision 2025 Iceland.mp4',
+  },
 ];
