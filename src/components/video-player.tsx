@@ -176,19 +176,6 @@ export function VideoPlayer({
             <p className="text-sm text-primary/80 truncate">{video.artist}</p>
           </div>
 
-          {!isPlaying && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handlePlayPause}
-                className="w-24 h-24 text-white hover:bg-white/10"
-              >
-                <Play className="w-16 h-16 fill-current" />
-              </Button>
-            </div>
-          )}
-
           <div className="p-4 space-y-2">
             <div className="flex items-center gap-2 text-white text-xs">
               <span>{formatTime(progress)}</span>
