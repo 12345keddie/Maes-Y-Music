@@ -11,23 +11,9 @@ export function initializeFirebase() {
     return getSdks(getApp());
   }
 
-  // When not in a browser, or when automatic initialization is not supported (e.g. Vercel),
-  // we must initialize with the config object.
-  if (typeof window === 'undefined' || process.env.NODE_ENV === 'test') {
-      const firebaseApp = initializeApp(firebaseConfig);
-      return getSdks(firebaseApp);
-  }
-
-  // In the browser, first try automatic initialization for Firebase Hosting.
-  try {
-    const firebaseApp = initializeApp();
-    return getSdks(firebaseApp);
-  } catch (e) {
-    console.warn('Automatic Firebase initialization failed. Falling back to firebase config object.', e);
-    // If that fails, fall back to the config object.
-    const firebaseApp = initializeApp(firebaseConfig);
-    return getSdks(firebaseApp);
-  }
+  // Always initialize with the explicit config for robustness across environments.
+  const firebaseApp = initializeApp(firebaseConfig);
+  return getSdks(firebaseApp);
 }
 
 export function getSdks(firebaseApp: FirebaseApp) {
