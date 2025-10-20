@@ -33,7 +33,7 @@ export const videos: Video[] = [
     artist: 'Wiz Khalifa, Ty Dolla $ign, Lil Yachty & Sueco the Child',
     thumbnailUrl: 'https://i.ytimg.com/vi/dCuCpVPkWDY/maxresdefault.jpg',
     videoUrl:
-      '/Wiz Khalifa, Ty Dolla $ign, Lil Yachty & Sueco the Child - Speed Me Up (Sonic The Hedgehog) [Official Music Video].mp4',
+      '/Wiz Khalifa, Ty Dolla $ign, Lil Yachty & Sueco the Child - Speed Me Up (Sonic The Hedgehog) [Video].mp4',
   },
   {
     id: 'jelly-roll-run-it',
