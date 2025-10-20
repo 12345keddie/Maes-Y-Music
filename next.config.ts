@@ -42,9 +42,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  devIndicators: {
-    buildActivity: false,
-  },
   experimental: {
     // allowedDevOrigins has been removed as it's no longer needed in this Next.js version
   },
