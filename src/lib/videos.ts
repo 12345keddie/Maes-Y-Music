@@ -39,7 +39,7 @@ export const videos: Video[] = [
     id: 'kid-cudi-stars-in-the-sky',
     title: 'Stars In The Sky',
     artist: 'Kid Cudi',
-    thumbnailUrl: 'https://i.ytimg.com/vi/efiLdiBk1f8/sddefault.jpg',
+    thumbnailUrl: 'https://i.ytimg.com/vi/yWwoEo7yf1U/sddefault.jpg',
     videoUrl: '/Kid Cudi - Stars In The Sky.mp4',
   },
   {
